@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from datetime import datetime
+from users.models import User as CarUser  # TODO: змінити назву і чи взагалі юзер треба в цьому файлі
+from carplates.models import CarPlate
 
 
 class User(AbstractUser):
@@ -8,20 +9,16 @@ class User(AbstractUser):
         return self.username
 
 
-class CarPlate(models.Model):
-    plate_number = models.CharField(max_length=20, unique=True)
-    parking_status = models.BooleanField(default=False)
-    parking_count = models.IntegerField(default=0)
-    banned = models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class Parking(models.Model):
+    carplate = models.ForeignKey(CarPlate, on_delete=models.CASCADE)
+    parked_at = models.DateTimeField(auto_now_add=True)
+    unparked_at = models.DateTimeField()
+    parked_time = models.TimeField()
+    value = models.FloatField(default=0)
+    user = models.ForeignKey(CarUser, on_delete=models.CASCADE)
+
+    def set_parked_time(self):
+        self.parked_time = self.unparked_at - self.parked_at
 
     def __str__(self):
-        return self.plate_number
-
-
-class Parking(models.Model):
-    car_plate = models.ForeignKey(CarPlate, on_delete=models.CASCADE)
-    parking_start = models.DateTimeField(default=datetime.now)
-    parking_end = models.DateTimeField()
-    parking_price = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-
+        return self.carplate.plate_number
