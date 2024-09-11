@@ -1,0 +1,51 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+
+<divv class="row">
+    <h2>Sign Up</h2>
+</div>
+
+<form method="POST" action="{% url 'users:signup' %}" class="w-50 p-3">
+    {% csrf_token %}
+    <div class="row">
+        <div class="mb-3">
+        <label> Username: </label>
+        <div>{{ form.username }}</div>
+
+        <span>{{ form.errors.username }}</span>
+       </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="mb-3">
+        <label> Email: </label>
+        <div>{{ form.email }}</div>
+
+        <span>{{ form.errors.email }}</span>
+       </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="mb-3">
+        <label> Password:
+            <div>{{ form.password1 }}</div>
+        </label>
+        <span>{{ form.errors.password1 }}</span>
+       </div>
+    </div>
+    <div class="row">
+        <div class="mb-3">
+        <label> Password confirmation:
+            <div>{{ form.password2 }}</div>
+        </label>
+        <span>{{ form.errors.password2 }}</span>
+        </div>
+    </div>
+    <div class="grid">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="reset" class="btn btn-danger">Reset</button>
+    </div>
+</form>
+
+{% endblock %}
