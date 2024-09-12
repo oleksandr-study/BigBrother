@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'parking',
-    # 'users',
+    'users',
     'carplates',
     'parking_app',
 ]
