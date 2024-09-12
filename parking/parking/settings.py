@@ -14,6 +14,7 @@ from pathlib import Path
 import environ
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -142,8 +143,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 AUTH_USER_MODEL = 'users.User'
 
 LOGIN_REDIRECT_URL = '/users/profile/'
 LOGOUT_REDIRECT_URL = '/users/login/'
+
