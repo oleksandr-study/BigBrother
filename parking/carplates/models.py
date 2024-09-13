@@ -1,7 +1,5 @@
 from django.db import models
-
-
-# from parking.models import User
+from users.models import User
 
 
 class CarPlate(models.Model):
@@ -10,7 +8,7 @@ class CarPlate(models.Model):
     parked_now = models.BooleanField(default=False)
     banned = models.BooleanField(default=False)
 
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
 
     def str(self):
         return self.plate_number
