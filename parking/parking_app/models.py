@@ -8,7 +8,7 @@ class Parking(models.Model):
     carplate = models.ForeignKey(CarPlate, on_delete=models.CASCADE)
     parked_at = models.DateTimeField(auto_now_add=True)
     unparked_at = models.DateTimeField()
-    parked_time = models.TimeField()
+    parked_time = models.DurationField()
     value = models.FloatField(default=0)
 
     def set_parked_time(self):
@@ -16,4 +16,3 @@ class Parking(models.Model):
 
     def __str__(self):
         return self.carplate.plate_number
-
