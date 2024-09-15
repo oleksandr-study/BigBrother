@@ -16,3 +16,10 @@ class Parking(models.Model):
 
     def __str__(self):
         return self.carplate.plate_number
+
+
+    class ParkingPrice(models.Model):
+        duration_from = models.DurationField()
+        duration_to = models.DurationField()
+        price = models.DecimalField(max_digits=5, decimal_places=2)
+
