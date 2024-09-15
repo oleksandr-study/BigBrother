@@ -1,4 +1,6 @@
 from django.contrib import messages
+import glob
+import os
 
 from django.shortcuts import render, redirect
 from carplates.forms import imageForm
@@ -31,6 +33,10 @@ def check_carplate(request):
                     if CarPlate.objects.get(plate_number=plate_number).banned:
                         messages.error(request, 'Carplate banned')
                         return render(request, 'check-carplate.html', {'form': form})
+
+                files = glob.glob(str(settings.MEDIA_ROOT / 'images/*'))
+                for file in files:
+                    os.remove(file)
 
             return redirect('parking_app.new_parking', plate_number)
     else:
