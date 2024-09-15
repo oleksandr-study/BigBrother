@@ -29,7 +29,34 @@
         <button type="submit">Save Changes</button>
         <button type="reset" class="secondary">Reset</button>
     </div>
-
 </form>
+
+<h2>Your Car Plates</h2>
+{% if car_plates %}
+    <ul>
+        {% for car_plate in car_plates %}
+            <li>{{ car_plate.plate_number }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No car plates found.</p>
+{% endif %}
+
+<h2>Your Parking History</h2>
+{% if parking_history %}
+    <ul>
+        {% for parking in parking_history %}
+            <li>
+                Plate: {{ parking.carplate.plate_number }}, 
+                Start: {{ parking.parked_at|date:"Y-m-d H:i" }}, 
+                End: {{ parking.unparked_at|date:"Y-m-d H:i" }}, 
+                Duration: {{ parking.parked_time }},
+                Cost: {{ parking.value }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No parking history found.</p>
+{% endif %}
 
 {% endblock content %}

@@ -1,21 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-
-
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.http import HttpResponse
-
 from .forms import RegisterForm, LoginForm, ProfileForm
 from .models import Profile, User
-
+from carplates.models import CarPlate
+from parking_app.models import Parking
 
 def signupuser(request):
     if request.user.is_authenticated:
@@ -30,8 +23,6 @@ def signupuser(request):
             return render(request, 'users/signup.html', context={'form': form})
         
     return render(request, 'users/signup.html', context={'form': RegisterForm()})
-
-
 
 def loginuser(request):
     if request.user.is_authenticated:
@@ -51,12 +42,10 @@ def loginuser(request):
     form = LoginForm()  
     return render(request, 'users/login.html', context={"form": form})
 
-
 @login_required
 def logoutuser(request):
     logout(request)
     return redirect(to='users:login')
-
 
 @login_required
 def profile(request):
@@ -72,8 +61,16 @@ def profile(request):
     else:
         profile_form = ProfileForm(instance=request.user.profile)
     
-    return render(request, 'users/profile.html', {'profile_form': profile_form})
-
+    car_plates = CarPlate.objects.filter(user=request.user)
+    parking_history = Parking.objects.filter(carplate__in=car_plates)
+    
+    context = {
+        'profile_form': profile_form,
+        'car_plates': car_plates,
+        'parking_history': parking_history,
+    }
+    
+    return render(request, 'users/profile.html', context)
 
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     template_name = 'users/password_reset.html'
