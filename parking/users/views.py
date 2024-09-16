@@ -52,13 +52,13 @@ def loginuser(request):
     return render(request, 'users/login.html', context={"form": form})
 
 
-@login_required
+@login_required(login_url='/users/login')
 def logoutuser(request):
     logout(request)
     return redirect(to='users:login')
 
 
-@login_required
+@login_required(login_url='/users/login')
 def profile(request):
     if not hasattr(request.user, 'profile'):
         Profile.objects.create(user=request.user)

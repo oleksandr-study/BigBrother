@@ -1,35 +1,40 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-<div>
-    <h1>Profile page: {{user.username}}</h1>
-    <img src="{{ user.profile.avatar.url }}" alt="avatar of user"/>
-</div>
+<div class="container mt-5">
+    <h1 class="mb-4">Профіль: {{ user.username }}</h1>
+    <div class="mb-4">
+        <img src="{{ user.profile.avatar.url }}" alt="Аватар користувача" class="img-fluid rounded-circle" style="width: 150px; height: 150px;"/>
+    </div>
 
-{% if messages %}
-<div>
-    {% for message in messages %}
-    <div {% if message.tags %} class="alert-{{ message.tags }}" {% endif %}>{{ message }}</div>
-    {% endfor %}
-</div>
-{% endif %}
-
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-row">
-        <div class="col-md-5">
-            <div class="form-group">
-                <label class="small mb-1">Change Avatar:</label>
-                {{ profile_form.avatar }}
-                <span>{{ profile_form.errors.avatar }}</span>
-            </div>
+    {% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
+        {% endfor %}
     </div>
-    <div class="grid">
-        <button type="submit">Save Changes</button>
-        <button type="reset" class="secondary">Reset</button>
-    </div>
+    {% endif %}
 
-</form>
-
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_avatar" class="form-label">Змінити аватар:</label>
+            {{ profile_form.avatar }}
+            {% if profile_form.errors.avatar %}
+            <div class="invalid-feedback d-block">
+                {{ profile_form.errors.avatar }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+            <button type="reset" class="btn btn-secondary">Скинути</button>
+        </div>
+    </form>
+</div>
 {% endblock content %}

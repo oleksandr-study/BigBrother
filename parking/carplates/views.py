@@ -12,7 +12,7 @@ from carplates.models import CarPlate
 from carplates.recognition import recognition
 
 
-@login_required(login_url='login')
+@login_required(login_url='/users/login')
 def check_carplate(request):
     if request.method == 'POST':
         form = imageForm(request.POST, request.FILES)
@@ -24,9 +24,9 @@ def check_carplate(request):
 
             plate_number = recognition(str(settings.MEDIA_ROOT / 'images/plate.jpg'))
             if not plate_number:
-                messages.error(request, 'No plate detected')
+                message = "Plate number not detected!"
                 form = imageForm()
-                return render(request, 'check-carplate.html', {'form': form})
+                return render(request, 'check-carplate.html', {'form': form, 'message': message})
             else:
                 if not CarPlate.objects.filter(plate_number=plate_number).exists():
                     add_new_carplate(request.user ,plate_number)

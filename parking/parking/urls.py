@@ -18,12 +18,14 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
+from carplates.views import check_carplate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('carplates/', include('carplates.urls')),
     path('parking/', include('parking_app.urls')),
+    path('', check_carplate, name='main_check_carplate' ),
 ]
 
 if settings.DEBUG:

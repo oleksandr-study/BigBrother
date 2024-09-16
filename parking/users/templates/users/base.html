@@ -4,48 +4,51 @@
     <meta charset="UTF-8">
     <title>User App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'users/style.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
-    crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
 </head>
 <body>
-  <div class="container">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary col-md-8">
-      {% if user.is_authenticated %}
-      <div class="container-sm px-4">
-        <div class="navbar-nav">
-          {% if request.path != '/users/profile/' %}
-            <a class="nav-link active" aria-current="page" href="{% url 'users:profile' %}">Profile</a>
-          {% endif %}
-        </div>
-      </div>
-      <div class="col-md-3 mt-3">
-        <p>
-          {% if request.path != '/users/login/' %}
-            <a href="{% url 'users:logout' %}" class="btn btn-primary">Logout</a>
-          {% endif %}
-        </p>
-      </div>
-      {% else %}
-      <div class="container-sm px-4">
-        <div class="navbar-nav">
-          {% if request.path != '/users/login/' %}
-            <a class="nav-link active" aria-current="page" href="{% url 'users:login' %}">Login</a>
-          {% endif %}
-          {% if request.path != '/users/signup/' %}
-            <a class="nav-link active" aria-current="page" href="{% url 'users:signup' %}">Sign Up</a>
-          {% endif %}
-        </div>
-      </div>
-      {% endif %}
-    </nav>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Parking</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        {% if user.is_authenticated %}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if request.path != '/users/profile/' %}
+                        <a class="nav-link" aria-current="page"
+                           href="{% url 'users:profile' %}"><b>{{ user.username }}</b></a>
+                    {% endif %}
 
-    <div class="container">
-      {% block content %} {% endblock %}
+                    {% if request.path != '/users/login/' %}
+                        <a href="{% url 'users:logout' %}" class="nav-link">Logout</a>
+                    {% endif %}
+                </ul>
+            </div>
+        {% else %}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if request.path != '/users/login/' %}
+                        <a class="nav-link" aria-current="page" href="{% url 'users:login' %}">Login</a>
+                    {% endif %}
+
+                    {% if request.path != '/users/signup/' %}
+                        <a class="nav-link" aria-current="page" href="{% url 'users:signup' %}">Sign Up</a>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
     </div>
-  </div>
+</nav>
+    {% block content %}
+
+    {% endblock %}
 </body>
 </html>
