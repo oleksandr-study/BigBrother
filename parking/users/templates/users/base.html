@@ -10,10 +10,23 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
     crossorigin="anonymous"></script>
+
+
+    <style>
+        p, li {
+            margin-bottom: 15px;
+        }
+        h1, h2 {
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px; 
+        }
+    </style>
 </head>
 <body>
   <div class="container">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary col-md-8">
+    <nav class="navbar navbar-expand-lg">
       {% if user.is_authenticated %}
       <div class="container-sm px-4">
         <div class="navbar-nav">

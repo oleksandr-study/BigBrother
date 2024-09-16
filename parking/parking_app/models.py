@@ -9,6 +9,7 @@ class Parking(models.Model):
     unparked_at = models.DateTimeField(null=True)
     parked_time = models.DurationField(null=True)
     value = models.FloatField(default=0)
+    # user = models.ForeignKey(CarUser, on_delete=models.CASCADE)
 
     def set_parked_time(self):
         self.parked_time = self.unparked_at - self.parked_at
