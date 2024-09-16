@@ -1,62 +1,70 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-8 col-lg-6 col-xl-4">
-            <div class="text-center mb-4">
-                <h2>Sign Up</h2>
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8 col-lg-6 col-xl-4">
+                <div class="text-center mb-4">
+                    <h2>Sign Up</h2>
+                </div>
+
+                <form method="POST" action="{% url 'users:signup' %}" class="p-4 border rounded shadow-sm bg-white">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Username</label>
+                        <input type="text" name="username" id="id_username" class="form-control"
+                               value="{{ form.username.value|default:'' }}" {% if form.username.errors %}
+                               aria-invalid="true" {% endif %}>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.username.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Email</label>
+                        <input type="email" name="email" id="id_email" class="form-control"
+                               value="{{ form.email.value|default:'' }}" {% if form.email.errors %}
+                               aria-invalid="true" {% endif %}>
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.email.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password1" class="form-label">Password</label>
+                        <input type="password" name="password1" id="id_password1" class="form-control"
+                               value="{{ form.password1.value|default:'' }}" {% if form.password1.errors %}
+                               aria-invalid="true" {% endif %}>
+                        {% if form.password1.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.password1.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password2" class="form-label">Password Confirmation</label>
+                        <input type="password" name="password2" id="id_password2" class="form-control"
+                               value="{{ form.password2.value|default:'' }}" {% if form.password2.errors %}
+                               aria-invalid="true" {% endif %}>
+                        {% if form.password2.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.password2.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="reset" class="btn btn-danger">Reset</button>
+                    </div>
+                </form>
             </div>
-
-            <form method="POST" action="{% url 'users:signup' %}" class="p-4 border rounded shadow-sm bg-white">
-                {% csrf_token %}
-
-                <div class="mb-3">
-                    <label for="id_username" class="form-label">Username</label>
-                    <input type="text" name="username" id="id_username" class="form-control" value="{{ form.username.value|default:'' }}" {% if form.username.errors %} aria-invalid="true" {% endif %}>
-                    {% if form.username.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.username.errors }}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div class="mb-3">
-                    <label for="id_email" class="form-label">Email</label>
-                    <input type="email" name="email" id="id_email" class="form-control" value="{{ form.email.value|default:'' }}" {% if form.email.errors %} aria-invalid="true" {% endif %}>
-                    {% if form.email.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.email.errors }}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div class="mb-3">
-                    <label for="id_password1" class="form-label">Password</label>
-                    <input type="password" name="password1" id="id_password1" class="form-control" value="{{ form.password1.value|default:'' }}" {% if form.password1.errors %} aria-invalid="true" {% endif %}>
-                    {% if form.password1.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.password1.errors }}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div class="mb-3">
-                    <label for="id_password2" class="form-label">Password Confirmation</label>
-                    <input type="password" name="password2" id="id_password2" class="form-control" value="{{ form.password2.value|default:'' }}" {% if form.password2.errors %} aria-invalid="true" {% endif %}>
-                    {% if form.password2.errors %}
-                    <div class="invalid-feedback d-block">
-                        {{ form.password2.errors }}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div class="d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    <button type="reset" class="btn btn-danger">Reset</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 {% endblock %}
