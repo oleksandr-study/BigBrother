@@ -19,6 +19,7 @@ numpy = "<2"
 django-environ = "^0.11.2"
 psycopg2 = "^2.9.9"
 pillow = "^10.4.0"
+pytesseract = "^0.3.13"
 
 
 [build-system]

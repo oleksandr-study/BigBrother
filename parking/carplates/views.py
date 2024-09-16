@@ -2,15 +2,17 @@ from django.contrib import messages
 import glob
 import os
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from carplates.forms import imageForm
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
 from carplates.models import CarPlate
-from recognition import recognition
+from carplates.recognition import recognition
 
 
+@login_required(login_url='login')
 def check_carplate(request):
     if request.method == 'POST':
         form = imageForm(request.POST, request.FILES)
@@ -20,7 +22,7 @@ def check_carplate(request):
             fs = FileSystemStorage(location=settings.MEDIA_ROOT / 'images')
             fs.save('plate.jpg', image)
 
-            plate_number = recognition(str(settings.MEDIA_ROOT / 'images/image.jpg'))
+            plate_number = recognition(str(settings.MEDIA_ROOT / 'images/plate.jpg'))
             if not plate_number:
                 messages.error(request, 'No plate detected')
                 form = imageForm()
@@ -38,7 +40,7 @@ def check_carplate(request):
                 for file in files:
                     os.remove(file)
 
-            return redirect('parking_app.new_parking', plate_number)
+            return redirect(f"/parking/{plate_number}")
     else:
         form = imageForm()
     return render(request, 'check-carplate.html', {'form': form})
@@ -48,5 +50,6 @@ def add_new_carplate(user, plate_number):
     carplate = CarPlate()
     carplate.user = user
     carplate.plate_number = plate_number
+    carplate.parked_now = False
     carplate.save()
     return carplate.plate_number
