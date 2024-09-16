@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
 
-@login_required(login_url='login')
+@login_required(login_url='/users/login')
 def new_parking(request, plate_number):
     carplate = CarPlate.objects.get(plate_number=plate_number)
     if carplate.parked_now:
@@ -42,7 +42,7 @@ def new_parking(request, plate_number):
     return render(request, 'add_parking.html', {'plate_number': plate_number, 'message': message})
 
 
-@login_required(login_url='login')
+@login_required(login_url='/users/login')
 def export_csv(request):
     user = request.user
     parkings = Parking.objects.select_related('carplate').filter(carplate__user=user)
@@ -75,7 +75,7 @@ def export_csv(request):
     return response
 
 
-@login_required(login_url='login')
+@login_required(login_url='/users/login')
 def create_prices(request):
     prices = [
         {"duration_from": timedelta(minutes=0), "duration_to": timedelta(minutes=30), "price": 0.00},

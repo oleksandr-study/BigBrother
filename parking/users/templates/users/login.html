@@ -1,37 +1,42 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-8 col-lg-6 col-xl-4">
+                <div class="text-center mb-4">
+                    <h2>Login</h2>
+                </div>
 
-<div class="row">
-    <h2>Login</h2>
-</div>
+                {% if messages %}
+                    <div class="mb-4">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible alert-danger fade show"
+                                 role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
-{% if messages %}
-<div class="row">
-    {% for message in messages %}
-    <div {% if message.tags %} class="alert-{{ message.tags }}" {% endif %}>{{ message }}</div>
-    {% endfor %}
-</div>
-{% endif %}
-
-<form action="{% url 'users:login' %}" method="post" class="w-25 p-3">
-    {% csrf_token %}
-        <div class="row">
-            <div class="mb-3">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username">
+                <form action="{% url 'users:login' %}" method="post" class="p-4 border rounded shadow-sm bg-white">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                    <div class="small text-center mt-3">
+                        <a href="{% url 'users:password_reset' %}" class="text-muted"><i>Forgot Password?</i></a>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="row">
-            <div class="mb-3">
-                <label for="username">Password</label>
-                <input type="password" class="form-control" id="password" name="password">
-            </div>
-        </div>
-        <input type="submit" value="Login" class="btn btn-primary">
-        <div class="small text-center">
-            <a href="{% url 'users:password_reset' %}" class="text-center"><i>Forgot Password?</i></a>
-        </div>
-</form>
-
+    </div>
 {% endblock %}
