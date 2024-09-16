@@ -31,6 +31,10 @@
     </div>
 </form>
 
+<div class="mt-4 mb-4">
+    <a href="/carplates" class="btn btn-primary">Add Car Plate</a>
+</div>
+
 <h2>Your Car Plates</h2>
 {% if car_plates %}
     <ul>
@@ -58,5 +62,8 @@
 {% else %}
     <p>No parking history found.</p>
 {% endif %}
+
+
+<a href="/parking/export/csv" class="btn btn-primary mt-3">Export Parking History (CSV)</a>
 
 {% endblock content %}
