@@ -30,7 +30,7 @@
                     {% endif %}
 
                     {% if request.path != '/users/login/' %}
-                        <a href="{% url 'users:logout' %}" class="nav-link">Logout</a>
+                        <a href="{% url 'users:logout' %}" class="nav-link">Вийти</a>
                     {% endif %}
                 </ul>
             </div>
@@ -38,11 +38,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if request.path != '/users/login/' %}
-                        <a class="nav-link" aria-current="page" href="{% url 'users:login' %}">Login</a>
+                        <a class="nav-link" aria-current="page" href="{% url 'users:login' %}">Увійти</a>
                     {% endif %}
 
                     {% if request.path != '/users/signup/' %}
-                        <a class="nav-link" aria-current="page" href="{% url 'users:signup' %}">Sign Up</a>
+                        <a class="nav-link" aria-current="page" href="{% url 'users:signup' %}">Зареєструватись</a>
                     {% endif %}
                 </ul>
             </div>
