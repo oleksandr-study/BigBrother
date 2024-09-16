@@ -46,7 +46,7 @@ def loginuser(request):
             return render(request, 'users/login.html', context={"form": form})
 
         login(request, user)
-        return redirect(to='users:profile')
+        return redirect('/')
 
     form = LoginForm()  
     return render(request, 'users/login.html', context={"form": form})
