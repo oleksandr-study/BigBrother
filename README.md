@@ -27,5 +27,5 @@ EMAIL_HOST_PASSWORD=
 5. Create .env and add info as at example
 6. In console type
 ```docker-compose up -d```
-7. GOTO ```127.0.0.1:8000```
+7. GOTO [127.0.0.1:8000](127.0.0.1:8000)
 8. Enjoy
