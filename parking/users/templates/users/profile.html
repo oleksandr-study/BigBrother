@@ -56,7 +56,7 @@
                     Plate: {{ parking.carplate.plate_number }}, 
                     Start: {{ parking.parked_at|date:"Y-m-d H:i" }}, 
                     End: {{ parking.unparked_at|date:"Y-m-d H:i" }}, 
-                    Duration: {{ parking.parked_time }},
+                    Duration: {{ parking.formatted_parked_time }},
                     Cost: {{ parking.value }}
                 </li>
             {% endfor %}

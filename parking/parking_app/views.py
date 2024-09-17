@@ -43,6 +43,7 @@ def new_parking(request, plate_number):
 
 
 @login_required(login_url='/users/login')
+@login_required(login_url='/users/login')
 def export_csv(request):
     user = request.user
     parkings = Parking.objects.select_related('carplate').filter(carplate__user=user)
@@ -50,18 +51,17 @@ def export_csv(request):
     if not parkings.exists():
         output = StringIO()
         writer = csv.writer(output)
-        writer.writerow(['Номер платіжки', 'Час паркування', 'Час виїзду', 'Час паркування (секунди)', 'Вартість'])
-        writer.writerow(['Немає даних', '', '', '', ''])
+        writer.writerow(['Немає даних для експорту'])
         output.seek(0)
-        response = HttpResponse(output, content_type='text/csv')
+        response = HttpResponse(output, content_type='text/csv; charset=utf-8-sig')
         response['Content-Disposition'] = 'attachment; filename="parking_data.csv"'
         return response
 
     data = []
     for parking in parkings:
         plate_number = parking.carplate.plate_number
-        parked_at = parking.parked_at
-        unparked_at = parking.unparked_at if parking.unparked_at else ''
+        parked_at = parking.parked_at.strftime('%Y-%m-%d %H:%M') if parking.parked_at else ''
+        unparked_at = parking.unparked_at.strftime('%Y-%m-%d %H:%M') if parking.unparked_at else ''
         parked_time = parking.parked_time.total_seconds() if parking.parked_time else 0
         value = parking.value
         data.append([plate_number, parked_at, unparked_at, parked_time, value])
@@ -79,8 +79,9 @@ def export_csv(request):
     writer.writerow(['Номер платіжки', 'Час паркування', 'Час виїзду', 'Час паркування (секунди)', 'Вартість'])
     writer.writerows(np_data)
     writer.writerow(['Всього', '', '', f'{total_parked_time / 3600:.2f} годин', f'{total_value:.2f}'])
+    
     output.seek(0)
-    response = HttpResponse(output, content_type='text/csv')
+    response = HttpResponse(output, content_type='text/csv; charset=utf-8-sig')
     response['Content-Disposition'] = 'attachment; filename="parking_data.csv"'
 
     return response
