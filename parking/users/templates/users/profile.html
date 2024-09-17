@@ -1,109 +1,139 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">Профіль: {{ user.username }}</h1>
-    <div class="mb-4">
-        <img src="{{ user.profile.avatar.url }}" alt="Аватар користувача" class="img-fluid rounded-circle" style="width: 150px; height: 150px;"/>
-    </div>
-
-    {% if messages %}
-    <div class="alert-container">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+    <div class="container mt-5">
+        <h1 class="mb-4">Профіль: {{ user.username }}</h1>
+        <div class="mb-4">
+            <img src="{{ user.profile.avatar.url }}" alt="Аватар користувача" class="img-fluid rounded-circle"
+                 style="width: 150px; height: 150px;"/>
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="id_avatar" class="form-label">Змінити аватар:</label>
-            {{ profile_form.avatar }}
-            {% if profile_form.errors.avatar %}
-            <div class="invalid-feedback d-block">
-                {{ profile_form.errors.avatar }}
+        {% if messages %}
+            <div class="alert-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
             </div>
-            {% endif %}
-        </div>
-        <div class="form-group mt-4">
-            <button type="submit" class="btn btn-primary">Зберегти зміни</button>
-            <button type="reset" class="btn btn-secondary">Скинути</button>
-        </div>
-    </form>
+        {% endif %}
 
-    <h2 class="mt-5">Ваші номерні знаки</h2>
-    {% if car_plates %}
-        <ul class="list-group">
-            {% for car_plate in car_plates %}
-                <li class="list-group-item">{{ car_plate.plate_number }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Немає зареєстрованих номерних знаків.</p>
-    {% endif %}
-
-    <h2 class="mt-5">Ваша історія парковок</h2>
-    {% if parking_history %}
-        <ul class="list-group">
-            {% for parking in parking_history %}
-                <li class="list-group-item">
-                    Plate: {{ parking.carplate.plate_number }}, 
-                    Start: {{ parking.parked_at|date:"Y-m-d H:i" }}, 
-                    End: {{ parking.unparked_at|date:"Y-m-d H:i" }}, 
-                    Duration: {{ parking.formatted_parked_time }},
-                    Cost: {{ parking.value }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Немає історії парковок.</p>
-    {% endif %}
-
-    <div class="mt-5">
-        <form method="post" action="{% url 'parking_app:export_csv' %}">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Експортувати історію парковок</button>
+            <div class="form-group">
+                <label for="id_avatar" class="form-label">Змінити аватар:</label>
+                {{ profile_form.avatar }}
+                {% if profile_form.errors.avatar %}
+                    <div class="invalid-feedback d-block">
+                        {{ profile_form.errors.avatar }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+                <button type="reset" class="btn btn-secondary">Скинути</button>
+            </div>
         </form>
-    </div>
 
-    <div class="mt-5">
-        <button class="btn btn-primary" onclick="toggleSummary()">Переглянути загальний час паркування</button>
-        <div id="total-parked-time" style="display: none; margin-top: 15px;">
-            <h3>Підсумок паркування</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Номер</th>
-                        <th>Загальний час паркування</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for plate_number, details in summary.items %}
-                        <tr>
-                            <td>{{ plate_number }}</td>
-                            <td>{{ details.formatted_time }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        {% if current_parking %}
+                            <div class="alert alert-success text-center mb-1 mt-1" role="alert">
+                                <h4 class="alert-heading">{{ current_parking.carplate.plate_number }}</h4>
+                                <p>Запаркована о {{ current_parking.parked_at|date:"H:i, d.m.Y" }}.</p>
+                                <a class="btn btn-primary btn-lg mt-1" href="/carplates/">Виїхати</a>
+                            </div>
+                        {% else %}
+                            <div class="text-center">
+                                <h5>У вас немає запаркованих машин</h5>
+                                <a href="/carplates/" class="btn btn-primary btn-lg mt-3">Запаркуватись</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    
 
-<script>
-    function toggleSummary() {
-        var summaryDiv = document.getElementById('total-parked-time');
-        if (summaryDiv.style.display === 'none') {
-            summaryDiv.style.display = 'block';
-        } else {
-            summaryDiv.style.display = 'none';
-        }
-    }
-</script>
+        <h2 class="mt-5">Ваші номерні знаки</h2>
+        {% if car_plates %}
+            <ul class="list-group">
+                {% for car_plate in car_plates %}
+                    <li class="list-group-item">{{ car_plate.plate_number }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Немає зареєстрованих номерних знаків.</p>
+        {% endif %}
+
+        <h2 class="mt-5">Ваша історія парковок</h2>
+        {% if parking_history %}
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center bg-light font-weight-bold">
+                    <span class="col-md-2">Номер машини</span>
+                    <span class="col-md-2">Початок</span>
+                    <span class="col-md-2">Кінець</span>
+                    <span class="col-md-2">Тривалість</span>
+                    <span class="col-md-2">Вартість</span>
+                </li>
+
+                {% for parking in parking_history %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="col-md-2">{{ parking.carplate.plate_number }}</span>
+                        <span class="col-md-2">{{ parking.parked_at|date:"Y-m-d H:i" }}</span>
+                        <span class="col-md-2">{{ parking.unparked_at|date:"Y-m-d H:i" }}</span>
+                        <span class="col-md-2">{{ parking.formatted_parked_time }}</span>
+                        <span class="col-md-2">{{ parking.value }} UAH</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Немає історії парковок.</p>
+        {% endif %}
+
+        <div class="mt-5">
+            <form method="post" action="{% url 'parking_app:export_csv' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Експортувати історію парковок</button>
+            </form>
+        </div>
+
+        <div class="mt-5">
+            <a class="btn btn-primary mb-5" style="width: 330px;" id="allTimeParking" onclick="toggleSummary()">Переглянути загальний час паркування</a>
+            <div id="total-parked-time" style="display: none;">
+                <h3>Підсумок паркування</h3>
+                <ul class="list-group mb-5">
+                    <li class="list-group-item d-flex justify-content-between bg-light font-weight-bold">
+                        <span class="col-md-6">Номер</span>
+                        <span class="col-md-6">Загальний час паркування</span>
+                    </li>
+                    {% for plate_number, details in summary.items %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span class="col-md-6">{{ plate_number }}</span>
+                            <span class="col-md-6">{{ details.formatted_time }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+        <script>
+            function toggleSummary() {
+                var summaryDiv = document.getElementById('total-parked-time');
+                var button = document.getElementById('allTimeParking')
+                if (summaryDiv.style.display === 'none') {
+                    summaryDiv.style.display = 'block';
+                    window.scrollTo(0, document.body.scrollHeight);
+                    button.innerText = 'Сховати загальний час паркування';
+                } else {
+                    summaryDiv.style.display = 'none';
+                    button.innerText = 'Переглянути загальний час паркування';
+                }
+            }
+        </script>
 {% endblock content %}
