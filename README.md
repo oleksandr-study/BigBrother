@@ -17,3 +17,15 @@ EMAIL_PORT=
 EMAIL_HOST_USER=
 EMAIL_HOST_PASSWORD=
 ```
+
+# Instalation
+1. Install Docker
+2. Clone project
+```git clone https://github.com/oleksandr-study/DC-Project.git```
+4. In console type
+```cd DC-Project```
+5. Create .env
+6. In console type
+```docker-compose up -d```
+7. GOTO 127.0.0.1:8000
+8. Enjoy
