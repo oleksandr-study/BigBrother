@@ -1,19 +1,19 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from datetime import timedelta
+from django.utils import timezone
 
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.http import HttpResponse
+from carplates.models import CarPlate
+from parking_app.models import Parking
 
 from .forms import RegisterForm, LoginForm, ProfileForm
 from .models import Profile, User
+
 
 
 def signupuser(request):
@@ -29,7 +29,6 @@ def signupuser(request):
             return render(request, 'users/signup.html', context={'form': form})
 
     return render(request, 'users/signup.html', context={'form': RegisterForm()})
-
 
 def loginuser(request):
     if request.user.is_authenticated:
@@ -49,12 +48,10 @@ def loginuser(request):
     form = LoginForm()
     return render(request, 'users/login.html', context={"form": form})
 
-
 @login_required(login_url='/users/login')
 def logoutuser(request):
     logout(request)
     return redirect(to='users:login')
-
 
 @login_required(login_url='/users/login')
 def profile(request):
@@ -70,8 +67,34 @@ def profile(request):
     else:
         profile_form = ProfileForm(instance=request.user.profile)
 
-    return render(request, 'users/profile.html', {'profile_form': profile_form})
+    car_plates = CarPlate.objects.filter(user=request.user)
+    parking_history = Parking.objects.filter(carplate__in=car_plates)
 
+    # Calculate parking summary
+    summary = {}
+    for car_plate in car_plates:
+        parkings = Parking.objects.filter(carplate=car_plate)
+        
+        total_parked_time = 0
+        
+        for parking in parkings:
+            end_time = parking.unparked_at if parking.unparked_at else timezone.now()
+            parked_time = calculate_parked_time(parking.parked_at, end_time)
+            total_parked_time += parked_time.total_seconds()
+        
+        summary[car_plate.plate_number] = {
+            'total_parked_time': total_parked_time,
+            'formatted_time': f'{total_parked_time / 3600:.2f} hours'
+        }
+    
+    context = {
+        'profile_form': profile_form,
+        'car_plates': car_plates,
+        'parking_history': parking_history,
+        'summary': summary,
+    }
+
+    return render(request, 'users/profile.html', context)
 
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     template_name = 'users/password_reset.html'
@@ -80,3 +103,32 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     success_url = reverse_lazy('users:password_reset_done')
     success_message = "An email with instructions to reset your password has been sent to %(email)s."
     subject_template_name = 'users/password_reset_subject.txt'
+
+
+def calculate_parked_time(start_time, end_time):
+    if end_time < start_time:
+        return timedelta(0)
+    return end_time - start_time
+
+@login_required(login_url='/users/login')
+def parking_summary(request):
+    car_plates = CarPlate.objects.filter(user=request.user)
+    
+    summary = {}
+    
+    for car_plate in car_plates:
+        parkings = Parking.objects.filter(carplate=car_plate)
+        
+        total_parked_time = 0
+        
+        for parking in parkings:
+            end_time = parking.unparked_at if parking.unparked_at else timezone.now()
+            parked_time = calculate_parked_time(parking.parked_at, end_time)
+            total_parked_time += parked_time.total_seconds()
+        
+        summary[car_plate.plate_number] = {
+            'total_parked_time': total_parked_time,
+            'formatted_time': f'{total_parked_time / 3600:.2f} hours'
+        }
+    
+    return render(request, 'users/parking_summary.html', {'summary': summary})

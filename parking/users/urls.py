@@ -6,6 +6,7 @@ from django.contrib.auth.views import (
 )
 from django.urls import path, reverse_lazy
 from . import views
+from .views import parking_summary
 
 app_name = "users"
 
@@ -15,7 +16,6 @@ urlpatterns = [
     path('logout/', views.logoutuser, name='logout'),   
     path('profile/', views.profile, name='profile'),  
 
-    # Сброс пароля
     path('reset-password/', 
          views.ResetPasswordView.as_view(), 
          name='password_reset'),
@@ -38,4 +38,5 @@ urlpatterns = [
              template_name='users/password_reset_complete.html'
          ), 
          name='password_reset_complete'),
+    
 ]
