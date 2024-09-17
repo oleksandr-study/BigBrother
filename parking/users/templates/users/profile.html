@@ -36,5 +36,74 @@
             <button type="reset" class="btn btn-secondary">Скинути</button>
         </div>
     </form>
-</div>
+
+    <h2 class="mt-5">Ваші номерні знаки</h2>
+    {% if car_plates %}
+        <ul class="list-group">
+            {% for car_plate in car_plates %}
+                <li class="list-group-item">{{ car_plate.plate_number }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Немає зареєстрованих номерних знаків.</p>
+    {% endif %}
+
+    <h2 class="mt-5">Ваша історія парковок</h2>
+    {% if parking_history %}
+        <ul class="list-group">
+            {% for parking in parking_history %}
+                <li class="list-group-item">
+                    Plate: {{ parking.carplate.plate_number }}, 
+                    Start: {{ parking.parked_at|date:"Y-m-d H:i" }}, 
+                    End: {{ parking.unparked_at|date:"Y-m-d H:i" }}, 
+                    Duration: {{ parking.parked_time }},
+                    Cost: {{ parking.value }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Немає історії парковок.</p>
+    {% endif %}
+
+    <div class="mt-5">
+        <form method="post" action="{% url 'parking_app:export_csv' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Експортувати історію парковок</button>
+        </form>
+    </div>
+
+    <div class="mt-5">
+        <button class="btn btn-primary" onclick="toggleSummary()">Переглянути загальний час паркування</button>
+        <div id="total-parked-time" style="display: none; margin-top: 15px;">
+            <h3>Підсумок паркування</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Загальний час паркування</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plate_number, details in summary.items %}
+                        <tr>
+                            <td>{{ plate_number }}</td>
+                            <td>{{ details.formatted_time }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+
+<script>
+    function toggleSummary() {
+        var summaryDiv = document.getElementById('total-parked-time');
+        if (summaryDiv.style.display === 'none') {
+            summaryDiv.style.display = 'block';
+        } else {
+            summaryDiv.style.display = 'none';
+        }
+    }
+</script>
 {% endblock content %}

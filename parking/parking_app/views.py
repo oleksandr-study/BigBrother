@@ -46,6 +46,17 @@ def new_parking(request, plate_number):
 def export_csv(request):
     user = request.user
     parkings = Parking.objects.select_related('carplate').filter(carplate__user=user)
+
+    if not parkings.exists():
+        output = StringIO()
+        writer = csv.writer(output)
+        writer.writerow(['Номер платіжки', 'Час паркування', 'Час виїзду', 'Час паркування (секунди)', 'Вартість'])
+        writer.writerow(['Немає даних', '', '', '', ''])
+        output.seek(0)
+        response = HttpResponse(output, content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="parking_data.csv"'
+        return response
+
     data = []
     for parking in parkings:
         plate_number = parking.carplate.plate_number
@@ -73,7 +84,6 @@ def export_csv(request):
     response['Content-Disposition'] = 'attachment; filename="parking_data.csv"'
 
     return response
-
 
 @login_required(login_url='/users/login')
 def create_prices(request):
