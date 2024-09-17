@@ -24,7 +24,7 @@ EMAIL_HOST_PASSWORD=
 ```git clone https://github.com/oleksandr-study/DC-Project.git```
 4. In console type
 ```cd DC-Project```
-5. Create .env
+5. Create .env and add info as at example
 6. In console type
 ```docker-compose up -d```
 7. GOTO 127.0.0.1:8000
