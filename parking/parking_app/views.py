@@ -88,18 +88,21 @@ def export_csv(request):
 
 @login_required(login_url='/users/login')
 def create_prices(request):
-    prices = [
-        {"duration_from": timedelta(minutes=0), "duration_to": timedelta(minutes=30), "price": 0.00},
-        {"duration_from": timedelta(minutes=31), "duration_to": timedelta(minutes=60), "price": 2.00},
-        {"duration_from": timedelta(minutes=61), "duration_to": timedelta(minutes=120), "price": 1.50},
-        {"duration_from": timedelta(minutes=121), "duration_to": timedelta(minutes=300), "price": 1.20},
-        {"duration_from": timedelta(minutes=301), "duration_to": timedelta(minutes=99999), "price": 1.00},
-    ]
+    if ParkingPrice.objects.exists():
+        return redirect('/carplates')
+    else:
+        prices = [
+            {"duration_from": timedelta(minutes=0), "duration_to": timedelta(minutes=30), "price": 0.00},
+            {"duration_from": timedelta(minutes=31), "duration_to": timedelta(minutes=60), "price": 2.00},
+            {"duration_from": timedelta(minutes=61), "duration_to": timedelta(minutes=120), "price": 1.50},
+            {"duration_from": timedelta(minutes=121), "duration_to": timedelta(minutes=300), "price": 1.20},
+            {"duration_from": timedelta(minutes=301), "duration_to": timedelta(minutes=99999), "price": 1.00},
+        ]
 
-    for price_data in prices:
-        ParkingPrice.objects.create(
-            duration_from=price_data["duration_from"],
-            duration_to=price_data["duration_to"],
-            price=price_data["price"]
-        )
-    return redirect('/carplates')
+        for price_data in prices:
+            ParkingPrice.objects.create(
+                duration_from=price_data["duration_from"],
+                duration_to=price_data["duration_to"],
+                price=price_data["price"]
+            )
+        return redirect('/carplates')
