@@ -14,6 +14,10 @@ from carplates.recognition import recognition
 
 @login_required(login_url='/users/login')
 def check_carplate(request):
+    files = glob.glob(str(settings.MEDIA_ROOT / 'images/*'))
+    for file in files:
+        os.remove(file)
+
     if request.method == 'POST':
         form = imageForm(request.POST, request.FILES)
 
@@ -25,13 +29,11 @@ def check_carplate(request):
             try:
                 plate_number = recognition(str(settings.MEDIA_ROOT / 'images/plate.jpg'))
             except:
-                return redirect('/carplates/manually')
+                message = 'Plate number not detected!'
+
+                return redirect('/carplates/manually', {'message': message})
             if not plate_number:
                 message = "Plate number not detected!"
-
-                files = glob.glob(str(settings.MEDIA_ROOT / 'images/*'))
-                for file in files:
-                    os.remove(file)
 
                 return redirect('/carplate/manually', {'message': message})
             else:
@@ -40,17 +42,9 @@ def check_carplate(request):
 
                 else:
                     if CarPlate.objects.get(plate_number=plate_number).banned:
-                        message = 'Carplate banned!'
-
-                        files = glob.glob(str(settings.MEDIA_ROOT / 'images/*'))
-                        for file in files:
-                            os.remove(file)
+                        message = 'Plate number banned!'
 
                         return render(request, 'check-carplate.html', {'message': message})
-
-                files = glob.glob(str(settings.MEDIA_ROOT / 'images/*'))
-                for file in files:
-                    os.remove(file)
 
             return redirect(f"/parking/{plate_number}")
     else:
@@ -61,6 +55,10 @@ def check_carplate(request):
 
 @login_required(login_url='/users/login')
 def add_carplate_manually(request):
+    files = glob.glob(str(settings.MEDIA_ROOT / 'images/*'))
+    for file in files:
+        os.remove(file)
+        
     if request.method == 'POST':
         form = plateNumberForm(request.POST)
         if form.is_valid():
@@ -76,11 +74,7 @@ def add_carplate_manually(request):
             else:
                 if CarPlate.objects.get(plate_number=plate_number).banned:
                     message = 'Carplate banned'
-                    return render(request, 'carplate_manual.html', {'form': form, 'message': message})
-
-            files = glob.glob(str(settings.MEDIA_ROOT / 'images/*'))
-            for file in files:
-                os.remove(file)
+                    return render(request, 'carplate_manual.html', { 'message': message})
 
             return redirect(f"/parking/{plate_number}")
     else:

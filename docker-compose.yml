@@ -1,9 +1,7 @@
 version: '3'
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: oleksandrstudy/parkvision
     command:
       /bin/sh -c "/usr/local/bin/wait-for-it.sh db:5432 
       -- python3 /ParkVision/parking/manage.py migrate --noinput && 

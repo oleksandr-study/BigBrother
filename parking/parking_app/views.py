@@ -27,7 +27,7 @@ def new_parking(request, plate_number):
                                                     duration_to__gte=parking.parked_time).first()
         parking.value = parking_price.price * (parking.parked_time.seconds // 60)
         parking.save()
-        message = f"Парковка закінчилася в {parking.unparked_at.time().strftime('%H:%M:%S')}"
+        message = f"Парковка закінчилася в {parking.unparked_at.time().strftime('%H:%M:%S')}, до сплати: {parking.value} грн"
 
     else:
         parking = Parking()
