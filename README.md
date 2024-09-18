@@ -21,11 +21,11 @@ EMAIL_HOST_PASSWORD=
 # Instalation
 1. Install Docker
 2. Clone project
-```git clone https://github.com/oleksandr-study/DC-Project.git```
+```git clone https://github.com/oleksandr-study/BigBrother.git```
 4. In console type
-```cd DC-Project```
+```cd BigBrother```
 5. Create .env and add info as at example
 6. In console type
-```docker-compose up -d```
+```docker-compose up```
 7. GOTO [127.0.0.1:8000](http://127.0.0.1:8000/)
 8. Enjoy
