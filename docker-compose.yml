@@ -1,12 +1,35 @@
 version: '3'
 services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+      /bin/sh -c "/usr/local/bin/wait-for-it.sh db:5432 
+      -- python3 /ParkVision/parking/manage.py migrate --noinput && 
+      python3 /ParkVision/parking/manage.py runserver 0.0.0.0:8000" 
+    volumes:
+      - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
+      - ./:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    depends_on:
+      - db
+  
   db:
+    hostname: postgres
     image: postgres
+    restart: always
     environment:
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     ports:
-      - "${DATABASE_PORT}:5432"
+      - "5001:5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
