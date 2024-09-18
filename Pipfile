@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+easyocr = "*"
+matplotlib = "*"
+imutils = "*"
+django = "*"
+tensorflow = "*"
+keras = "*"
+pandas = "*"
+sqlalchemy = "*"
+django-environ = "*"
+psycopg2 = "*"
+pillow = "*"
+pytesseract = "*"
+
+[dev-packages]
+ipykernel = "*"
+
+[requires]
+python_version = "3.12"
